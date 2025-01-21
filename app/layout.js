@@ -29,8 +29,8 @@ export default function RootLayout({ children }) {
 	return (
 		<html lang="en">
 			<body
-				className={`${comfortaa.variable} ${sanches.variable} ${spaceMono.variable} antialiased`}>
-				{children}
+				className={`${comfortaa.variable} ${sanches.variable} ${spaceMono.variable} antialiased justify-center items-center flex bg-gray-900`}>
+				<div className="container">{children}</div>
 			</body>
 		</html>
 	);
