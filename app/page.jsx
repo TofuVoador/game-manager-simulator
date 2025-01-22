@@ -4,7 +4,7 @@ import PlayerStats from "./components/PlayerStats";
 import Product from "./components/Product";
 import Reports from "./components/Reports";
 import PlanningForm from "./components/PlanningForm";
-import { runSimulation } from "./utils/gameLogic";
+import { calcularCustoTotal, runSimulation } from "./utils/gameLogic";
 
 export default function Page() {
 	// Nome do jogo (definido pelo jogador no início)
@@ -15,8 +15,8 @@ export default function Page() {
 	const [products, setProducts] = useState([]); // Lista de produtos
 	const [players, setPlayers] = useState(10000); // Jogadores ativos iniciais
 	const [money, setMoney] = useState(100000); // Dinheiro inicial
-	const [month, setMonth] = useState(1);
-	const [year, setYear] = useState(2025);
+	const [month, setMonth] = useState(new Date().getMonth() + 1);
+	const [year, setYear] = useState(new Date().getFullYear());
 	const [history, setHistory] = useState([]); // Histórico de ciclos
 	const [events, setEvents] = useState([]); // Últimos eventos gerados
 
@@ -27,26 +27,58 @@ export default function Page() {
 	};
 
 	// Confirma o planejamento e executa a simulação
-	const handleConfirmPlanning = ({ newProducts, marketing }) => {
-		const { updatedPlayers, updatedMoney, generatedEvents } = runSimulation({
-			players,
-			money,
-			products: newProducts,
-			marketing,
+	const handleConfirmPlanning = ({ newProducts }) => {
+		console.log(JSON.parse(JSON.stringify(products)));
+		let updatedProducts = products.filter((p) => p.selected === true);
+
+		console.log(JSON.parse(JSON.stringify(updatedProducts)));
+
+		const hasSeason = updatedProducts.some((p) => p.type === "season");
+		const hasEvent = updatedProducts.some((p) => p.type === "event");
+
+		const newMoney = Math.floor(money - calcularCustoTotal(newProducts));
+		const newPlayers = Math.floor((players * (3 + Math.random())) / 4);
+
+		console.log(newProducts);
+
+		newProducts.forEach((product) => {
+			if (product.type === "season" && hasSeason) {
+				updatedProducts = updatedProducts.filter((p) => p.type !== "season");
+			}
+			if (product.type === "event" && hasEvent) {
+				updatedProducts = updatedProducts.filter((p) => p.type !== "event");
+			}
+			updatedProducts.push(product);
 		});
 
+		const simulation = runSimulation({
+			products: updatedProducts,
+			money: newMoney,
+			players: newPlayers,
+		});
+
+		console.log(simulation);
+
 		// Atualiza o estado com os novos valores
-		setProducts(newProducts);
-		setPlayers(updatedPlayers);
-		setMoney(updatedMoney);
-		setEvents(generatedEvents);
-		setHistory([...history, { players: updatedPlayers, money: updatedMoney }]);
+		setProducts(simulation.products);
+		setPlayers(simulation.players);
+		setMoney(simulation.money);
+		setEvents(simulation.events);
+		setHistory([...history, { players: simulation.players, money: simulation.money }]);
 
 		// Avança um mês
 		setMonth((prev) => (prev % 12) + 1);
 		if (month === 12) {
 			setYear((prev) => prev + 1);
 		}
+	};
+
+	const handleToggle = (id) => {
+		setProducts((prevProducts) =>
+			prevProducts.map((product) =>
+				product.id === id ? { ...product, selected: !product.selected } : product
+			)
+		);
 	};
 
 	return (
@@ -76,6 +108,7 @@ export default function Page() {
 						money={money}
 						month={month}
 						year={year}
+						gameName={gameName}
 					/>
 
 					{/* Lista de produtos ativos */}
@@ -86,6 +119,7 @@ export default function Page() {
 								<Product
 									key={product.id}
 									product={product}
+									onToggle={handleToggle}
 								/>
 							))
 						) : (

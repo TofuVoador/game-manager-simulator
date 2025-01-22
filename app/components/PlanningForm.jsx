@@ -23,7 +23,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 
 	const addProduct = () => {
 		if (!newProduct.name.trim()) return;
-		setProducts([...products, { ...newProduct, id: Date.now() }]);
+		setProducts([...products, { ...newProduct, id: Date.now(), selected: true }]);
 		setNewProduct({ type: "season", name: "", price: "$" });
 	};
 
@@ -33,6 +33,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 
 	const handleConfirm = () => {
 		onSubmit({ newProducts: products });
+		setProducts([]);
 	};
 
 	return (
