@@ -2,30 +2,34 @@ const Product = ({ product, onToggle }) => {
 	const { name, price, type, revenue, selected, playerImpact, happening } = product;
 
 	return (
-		<div className="bg-gray-700 text-white p-3 rounded-lg flex justify-between items-center">
+		<div className="bg-gray-700 text-white p-3 rounded-lg flex gap-4 items-center">
 			<input
 				type="checkbox"
 				checked={selected}
 				onChange={() => onToggle(product.id)}
-				className="w-6 h-6"
+				className="w-5 h-5"
 			/>
-			<div>
-				<h3 className="font-bold">
-					{name} ({type} | {price})
-				</h3>
-				<p>
-					👥 {playerImpact > 0 ? `+${playerImpact}` : playerImpact} | 💵 ${revenue.toLocaleString()}
+			<div className="flex flex-col w-max">
+				<h3 className="font-bold">{name}</h3>
+				<p className="text-xs">
+					{type} | {price}
 				</p>
+				<div className="p-2">
+					<p className="text-md">
+						👥 {playerImpact > 0 ? `+${playerImpact}` : playerImpact} | 💵{" "}
+						{revenue.toLocaleString() < 0 ? `-$` : `+$` + Math.abs(revenue.toLocaleString())}
+					</p>
+				</div>
 				{happening.name ? (
-					<div className="text-xs p-1">
-						<h1 className="italic">❗ {happening.name}</h1>
+					<div className="text-xs">
+						<h1>❗{happening.name}</h1>
 						<div className="flex gap-2">
 							<p>👥 x{happening.playersMultiplier}</p>
-							<p>💵 x{happening.playersMultiplier}</p>
+							<p>💵 x{happening.revenueMultiplier}</p>
 						</div>
 					</div>
 				) : (
-					<p className="text-xs p-1 italic">Nada ocorreu...</p>
+					<></>
 				)}
 			</div>
 		</div>

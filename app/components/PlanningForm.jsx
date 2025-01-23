@@ -50,42 +50,47 @@ export default function PlanningForm({ onSubmit, budget }) {
 			<h2 className="text-lg font-bold">📝 Planejamento do Mês</h2>
 
 			<div className="mt-2 flex flex-col gap-2">
-				<select
-					name="type"
-					value={newProduct.type}
-					onChange={handleInputChange}
-					className="p-2 rounded text-black">
-					<option value="season">Temporada</option>
-					<option value="bundle">Bundle</option>
-					<option value="skin">Skin</option>
-					<option value="event">Evento</option>
-				</select>
+				{/* Linha combinada para Tipo e Preço */}
+				<div className="flex gap-2">
+					<select
+						name="type"
+						value={newProduct.type}
+						onChange={handleInputChange}
+						className="p-2 rounded text-black text-sm flex-1">
+						<option value="season">Temporada</option>
+						<option value="bundle">Bundle</option>
+						<option value="skin">Skin</option>
+						<option value="event">Evento</option>
+					</select>
 
+					<select
+						name="price"
+						value={newProduct.price}
+						onChange={handleInputChange}
+						className="p-2 rounded text-black text-sm flex-1">
+						{priceLevels.map((level, index) => (
+							<option
+								key={index}
+								value={level}>
+								{level}
+							</option>
+						))}
+					</select>
+				</div>
+
+				{/* Campo de Nome */}
 				<input
 					type="text"
 					name="name"
 					placeholder="Nome do Produto"
 					value={newProduct.name}
 					onChange={handleInputChange}
-					className="p-2 rounded text-black"
+					className="p-2 rounded text-black text-sm"
 				/>
 
-				<select
-					name="price"
-					value={newProduct.price}
-					onChange={handleInputChange}
-					className="p-2 rounded text-black">
-					{priceLevels.map((level, index) => (
-						<option
-							key={index}
-							value={level}>
-							{level}
-						</option>
-					))}
-				</select>
-
+				{/* Botão de Adicionar */}
 				<button
-					className="bg-blue-500 p-2 rounded"
+					className="bg-blue-500 p-2 rounded text-sm"
 					onClick={addProduct}>
 					➕ Adicionar
 				</button>
@@ -105,13 +110,13 @@ export default function PlanningForm({ onSubmit, budget }) {
 						</div>
 					))
 				) : (
-					<p className="text-gray-400">Nenhum produto adicionado.</p>
+					<p className="text-gray-400 italic text-xs">Nenhum produto adicionado.</p>
 				)}
 			</div>
 
 			{/* Prévia de custos */}
 			<div className="mt-4">
-				<h3 className="text-md font-bold">💰 Custo Estimado</h3>
+				<h3 className="text-md font-bold">💰 Custo</h3>
 				<p className={`font-bold ${costPreview > budget ? "text-red-500" : "text-green-500"}`}>
 					${costPreview} / ${budget}
 				</p>

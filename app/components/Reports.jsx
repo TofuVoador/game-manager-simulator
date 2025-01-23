@@ -19,14 +19,20 @@ export default function Reports({ history }) {
 	return (
 		<div className="bg-gray-800 p-4 rounded">
 			<h2 className="text-lg font-bold">📊 Relatório do Último Mês</h2>
-			<div className="mt-2">
+			<div className="mt-2 text-sm">
 				<p>
-					👥 Jogadores Ganhos/Perdidos:{" "}
-					<span className="font-bold">{playersDiff.toLocaleString()}</span>
+					👥{" "}
+					<span className="font-bold">
+						{playersDiff > 0 ? `+${playersDiff.toLocaleString()}` : playersDiff.toLocaleString()}
+					</span>
 				</p>
 				<p>
-					💰 Dinheiro Ganho/Perdido:{" "}
-					<span className="font-bold">${moneyDiff.toLocaleString()}</span>
+					💰{" "}
+					<span className="font-bold">
+						{moneyDiff > 0
+							? `+$${moneyDiff.toLocaleString()}`
+							: `-$${Math.abs(moneyDiff.toLocaleString())}`}
+					</span>
 				</p>
 			</div>
 		</div>

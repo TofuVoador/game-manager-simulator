@@ -156,7 +156,7 @@ export default function Page() {
 									/>
 								))
 							) : (
-								<p className="text-gray-400">Nenhum produto lançado ainda.</p>
+								<p className="text-gray-400 text-xs italic">Nenhum produto lançado ainda.</p>
 							)}
 						</div>
 					</div>
