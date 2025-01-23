@@ -13,33 +13,40 @@ export default function Page() {
 
 	// Estado do jogo
 	const [products, setProducts] = useState([]); // Lista de produtos
-	const [players, setPlayers] = useState(10000); // Jogadores ativos iniciais
-	const [money, setMoney] = useState(100000); // Dinheiro inicial
+	const [players, setPlayers] = useState(0); // Jogadores ativos iniciais
+	const [money, setMoney] = useState(0); // Dinheiro inicial
 	const [month, setMonth] = useState(new Date().getMonth() + 1);
 	const [year, setYear] = useState(new Date().getFullYear());
 	const [history, setHistory] = useState([]); // Histórico de ciclos
-	const [events, setEvents] = useState([]); // Últimos eventos gerados
+	const [investment, setInvestiment] = useState(50);
 
 	// Inicia o jogo após definir o nome
 	const startGame = () => {
 		if (gameName.trim() === "") return;
+
+		setMoney(1000 * (100 - investment));
+		setPlayers(100 * investment);
+
+		setHistory([
+			{
+				products: [],
+				players: 100 * investment,
+				money: 1000 * (100 - investment),
+			},
+		]);
+
 		setGameStarted(true);
 	};
 
 	// Confirma o planejamento e executa a simulação
 	const handleConfirmPlanning = ({ newProducts }) => {
-		console.log(JSON.parse(JSON.stringify(products)));
 		let updatedProducts = products.filter((p) => p.selected === true);
-
-		console.log(JSON.parse(JSON.stringify(updatedProducts)));
 
 		const hasSeason = updatedProducts.some((p) => p.type === "season");
 		const hasEvent = updatedProducts.some((p) => p.type === "event");
 
 		const newMoney = Math.floor(money - calcularCustoTotal(newProducts));
 		const newPlayers = Math.floor((players * (3 + Math.random())) / 4);
-
-		console.log(newProducts);
 
 		newProducts.forEach((product) => {
 			if (product.type === "season" && hasSeason) {
@@ -57,14 +64,18 @@ export default function Page() {
 			players: newPlayers,
 		});
 
-		console.log(simulation);
-
 		// Atualiza o estado com os novos valores
 		setProducts(simulation.products);
 		setPlayers(simulation.players);
 		setMoney(simulation.money);
-		setEvents(simulation.events);
-		setHistory([...history, { players: simulation.players, money: simulation.money }]);
+		setHistory([
+			...history,
+			{
+				products: simulation.products,
+				players: simulation.players,
+				money: simulation.money,
+			},
+		]);
 
 		// Avança um mês
 		setMonth((prev) => (prev % 12) + 1);
@@ -87,6 +98,8 @@ export default function Page() {
 			{!gameStarted ? (
 				<div className="flex flex-col items-center justify-center h-screen">
 					<h1 className="text-2xl font-bold mb-4">Nomeie seu jogo 🎮</h1>
+
+					{/* Campo para nome do jogo */}
 					<input
 						type="text"
 						className="p-2 rounded text-black"
@@ -94,6 +107,25 @@ export default function Page() {
 						value={gameName}
 						onChange={(e) => setGameName(e.target.value)}
 					/>
+
+					{/* Slider de Investimento */}
+					<div className="mt-4 w-64 text-center">
+						<label className="font-bold">💰 Investimento Inicial: {investment}%</label>
+						<input
+							type="range"
+							min="20"
+							max="80"
+							value={investment}
+							onChange={(e) => setInvestiment(Number(e.target.value))}
+							className="w-full"
+						/>
+						<div className="flex justify-between">
+							<p>💵 {1000 * (100 - investment)}</p>
+							<p>👥 {100 * investment}</p>
+						</div>
+					</div>
+
+					{/* Botão para iniciar */}
 					<button
 						className="mt-4 bg-blue-500 px-4 py-2 rounded"
 						onClick={startGame}>
@@ -114,25 +146,24 @@ export default function Page() {
 					{/* Lista de produtos ativos */}
 					<div className="mt-4">
 						<h2 className="text-lg font-bold mb-2">📦 Produtos Atuais</h2>
-						{products.length > 0 ? (
-							products.map((product) => (
-								<Product
-									key={product.id}
-									product={product}
-									onToggle={handleToggle}
-								/>
-							))
-						) : (
-							<p className="text-gray-400">Nenhum produto lançado ainda.</p>
-						)}
+						<div className="flex flex-col gap-2">
+							{products.length > 0 ? (
+								products.map((product) => (
+									<Product
+										key={product.id}
+										product={product}
+										onToggle={handleToggle}
+									/>
+								))
+							) : (
+								<p className="text-gray-400">Nenhum produto lançado ainda.</p>
+							)}
+						</div>
 					</div>
 
 					{/* Relatório do último ciclo */}
 					<div className="mt-6">
-						<Reports
-							history={history}
-							events={events}
-						/>
+						<Reports history={history} />
 					</div>
 
 					{/* Formulário de planejamento para o próximo ciclo */}

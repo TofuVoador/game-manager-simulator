@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { calcularCustoTotal } from "../utils/gameLogic";
+import { calcularCustoTotal, getSaturationByType } from "../utils/gameLogic";
 
 export default function PlanningForm({ onSubmit, budget }) {
 	const [newProduct, setNewProduct] = useState({
@@ -23,7 +23,16 @@ export default function PlanningForm({ onSubmit, budget }) {
 
 	const addProduct = () => {
 		if (!newProduct.name.trim()) return;
-		setProducts([...products, { ...newProduct, id: Date.now(), selected: true }]);
+		setProducts([
+			...products,
+			{
+				...newProduct,
+				id: Date.now(),
+				selected: true,
+				saturation: 1.0,
+				saturationIndex: getSaturationByType(newProduct.type),
+			},
+		]);
 		setNewProduct({ type: "season", name: "", price: "$" });
 	};
 
@@ -49,7 +58,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 					<option value="season">Temporada</option>
 					<option value="bundle">Bundle</option>
 					<option value="skin">Skin</option>
-					<option value="event">Evento/Festival</option>
+					<option value="event">Evento</option>
 				</select>
 
 				<input
