@@ -1,12 +1,29 @@
-import { getHappeningByType } from "./happenings";
-
-export function calcularCustoTotal(products) {
+export function calculateTotalCost(products) {
 	let total = 0;
-	const custosBase = { season: 8000, bundle: 4000, skin: 2000, event: 6000 };
-	const multiplicadorPreco = { Free: 0.5, $: 1, $$: 1.5, $$$: 2 };
+	const baseCost = { season: 8000, bundle: 4000, skin: 2000, event: 6000 };
+	const effortMultiplier = { low: 1, medium: 2, high: 3 };
 
 	products.forEach((product) => {
-		total += (custosBase[product.type] || 0) * (multiplicadorPreco[product.price] || 1);
+		total += (baseCost[product.type] || 2000) * (effortMultiplier[product.effort] || 1);
+	});
+
+	return total;
+}
+
+export function calculateCost(product) {
+	const baseCost = { season: 8000, bundle: 4000, skin: 2000, event: 6000 };
+	const effortMultiplier = { low: 1, medium: 2, high: 3 };
+
+	let cost = (baseCost[product.type] || 2000) * (effortMultiplier[product.effort] || 1);
+
+	return cost;
+}
+
+export function calculateTotalEffort(products) {
+	let total = 0;
+	const effortBase = { low: 1, medium: 2, high: 3 };
+	products.forEach((product) => {
+		total += effortBase[product.effort] || 2;
 	});
 
 	return total;
@@ -20,27 +37,20 @@ export function runSimulation({ products, money, players }) {
 
 	// Atualiza cada produto com seus impactos individuais
 	products = products.map((product) => {
-		// Busca um acontecimento para o tipo de produto
-		const happening = getHappeningByType(product.type) || {
-			revenueMultiplier: 1,
-			playersMultiplier: 1,
-		};
-
-		// Aplica a saturação e o impacto do acontecimento aos ganhos
 		const revenue =
 			product.saturation > 0
 				? Math.round(
 						multiplicadorPreco[product.price] *
 							(players / 100) *
 							product.saturation *
-							happening.revenueMultiplier
+							product.quality
 				  )
 				: 0;
 
 		const playerImpact = Math.round(
-			(1000 / (multiplicadorPreco[product.price] + 1)) *
+			(1000 / (multiplicadorPreco[product.price] == 0 ? 1 : multiplicadorPreco[product.price])) *
 				product.saturation *
-				happening.playersMultiplier
+				product.quality
 		);
 
 		// Reduz a saturação mensalmente (mantendo precisão de duas casas decimais)
@@ -52,7 +62,6 @@ export function runSimulation({ products, money, players }) {
 			saturation: newSaturation,
 			revenue,
 			playerImpact,
-			happening, // Armazena o acontecimento aplicado para referência futura
 		};
 	});
 

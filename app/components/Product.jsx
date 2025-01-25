@@ -1,6 +1,5 @@
 const Product = ({ product, onToggle }) => {
-	const { name, price, type, revenue, selected, playerImpact, happening } = product;
-
+	const { name, price, type, revenue, selected, playerImpact, quality } = product;
 	return (
 		<div className="bg-gray-700 text-white p-3 rounded-lg flex gap-4 items-center">
 			<input
@@ -20,17 +19,9 @@ const Product = ({ product, onToggle }) => {
 						{revenue.toLocaleString() < 0 ? `-$` : `+$` + Math.abs(revenue.toLocaleString())}
 					</p>
 				</div>
-				{happening.name ? (
-					<div className="text-xs">
-						<h1>❗{happening.name}</h1>
-						<div className="flex gap-2">
-							<p>👥 x{happening.playersMultiplier}</p>
-							<p>💵 x{happening.revenueMultiplier}</p>
-						</div>
-					</div>
-				) : (
-					<></>
-				)}
+				<div className="text-xs italic">
+					<p>Qualidade x{quality}</p>
+				</div>
 			</div>
 		</div>
 	);
