@@ -1,6 +1,6 @@
 export function calculateTotalCost(products) {
 	let total = 0;
-	const baseCost = { season: 8000, bundle: 4000, skin: 2000, event: 6000 };
+	const baseCost = { season: 8000, bundle: 6000, skin: 2000, event: 4000 };
 	const effortMultiplier = { low: 1, medium: 2, high: 3 };
 
 	products.forEach((product) => {
@@ -11,7 +11,7 @@ export function calculateTotalCost(products) {
 }
 
 export function calculateCost(product) {
-	const baseCost = { season: 8000, bundle: 4000, skin: 2000, event: 6000 };
+	const baseCost = { season: 8000, bundle: 6000, skin: 2000, event: 4000 };
 	const effortMultiplier = { low: 1, medium: 2, high: 3 };
 
 	let cost = (baseCost[product.type] || 2000) * (effortMultiplier[product.effort] || 1);
@@ -33,7 +33,8 @@ export function runSimulation({ products, money, players }) {
 	let newMoney = money;
 	let newPlayers = players;
 
-	const multiplicadorPreco = { Free: 0, $: 10, $$: 20, $$$: 30 };
+	const multiplicadorPreco = { Free: 0, $: 5, $$: 10, $$$: 15 };
+	const multiplicadorJogadores = { season: 8000, bundle: 4000, skin: 2000, event: 6000 };
 
 	// Atualiza cada produto com seus impactos individuais
 	products = products.map((product) => {
@@ -43,19 +44,19 @@ export function runSimulation({ products, money, players }) {
 						multiplicadorPreco[product.price] *
 							(players / 100) *
 							product.saturation *
-							product.quality
+							product.quality.index
 				  )
 				: 0;
 
 		const playerImpact = Math.round(
-			(1000 / (multiplicadorPreco[product.price] == 0 ? 1 : multiplicadorPreco[product.price])) *
+			(multiplicadorJogadores[product.type] /
+				(multiplicadorPreco[product.price] == 0 ? 1 : multiplicadorPreco[product.price])) *
 				product.saturation *
-				product.quality
+				product.quality.index
 		);
 
 		// Reduz a saturação mensalmente (mantendo precisão de duas casas decimais)
-		const newSaturation =
-			Math.round(100 * (product.saturation - Math.random() * product.saturationIndex)) / 100;
+		const newSaturation = Math.round(100 * (product.saturation - product.saturationIndex)) / 100;
 
 		return {
 			...product,
@@ -80,10 +81,10 @@ export function runSimulation({ products, money, players }) {
 
 export function getSaturationByType(type) {
 	const baseSaturation = {
-		season: 0.6,
+		season: 0.4,
 		bundle: 0.2,
-		skin: 0.4,
-		event: 0.8,
+		skin: 0.3,
+		event: 0.5,
 	};
 
 	// Retorna um valor aleatório dentro de uma faixa do tipo do produto

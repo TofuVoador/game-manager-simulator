@@ -31,7 +31,7 @@ export default function Reports({ history }) {
 					<span className="font-bold">
 						{moneyDiff > 0
 							? `+$${moneyDiff.toLocaleString()}`
-							: `-$${Math.abs(moneyDiff.toLocaleString())}`}
+							: `-$${Math.abs(moneyDiff).toLocaleString()}`}
 					</span>
 				</p>
 			</div>

@@ -74,7 +74,7 @@ export default function Page() {
 			}
 			updatedProducts.push(product);
 
-			newGameSaturation += 0.04 * product.quality;
+			newGameSaturation += 0.04 * product.quality.index;
 		});
 
 		const simulation = runSimulation({
@@ -115,13 +115,15 @@ export default function Page() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-900 text-white p-4">
+		<div className="min-h-screen bg-gray-900 text-white p-4 font-sans">
 			{/* Tela de Game Over */}
 			{players <= 0 ? (
 				<div className="flex flex-col items-center justify-center h-screen text-center">
 					<h1 className="text-3xl font-bold mb-4">💀 Game Over 💀</h1>
 					<p className="text-lg mb-2">Seu jogo perdeu todos os jogadores.</p>
-					<p className="italic text-gray-400">"Nem todo estúdio sobrevive ao mercado..."</p>
+					<p className="italic font-mono text-gray-400">
+						"Nem todo estúdio sobrevive ao mercado..."
+					</p>
 
 					{/* Relatório Final */}
 					<div className="mt-4 bg-gray-800 p-4 rounded w-80">
@@ -142,17 +144,17 @@ export default function Page() {
 				</div>
 			) : /* Tela inicial: escolha do nome */
 			!gameStarted ? (
-				<div className="flex flex-col items-center justify-center h-screen">
+				<div className="flex flex-col items-center justify-center">
 					{/* Título do jogo */}
 					<h1 className="text-2xl font-extrabold mb-4">🎮 Game Manager Simulator</h1>
 
 					{/* Breve descrição */}
 					<p className="text-sm text-gray-300 mb-6 max-w-md">
-						Gerencie seu próprio estúdio de jogos! Lance produtos, administre seus recursos e evite
-						a queda de jogadores ativos. Quanto tempo seu estúdio sobreviverá?
+						Gerencie seu próprio jogo! Lance produtos, administre seus recursos e evite a queda de
+						jogadores ativos. Quanto tempo seu estúdio sobreviverá?
 					</p>
 
-					<h1 className="text-xl font-bold mb-4">Nomeie seu jogo 🎮</h1>
+					<h1 className="text-xl font-bold mb-4">Nomeie seu jogo</h1>
 
 					<input
 						type="text"
@@ -174,7 +176,7 @@ export default function Page() {
 							className="w-full"
 						/>
 						<div className="flex justify-between">
-							<p>💵 {1000 * (100 - investment)}</p>
+							<p>💰 {1000 * (100 - investment)}</p>
 							<p>👥 {1000 * investment}</p>
 						</div>
 					</div>
@@ -199,7 +201,7 @@ export default function Page() {
 					{/* Lista de produtos ativos */}
 					<div className="mt-4">
 						<h2 className="text-lg font-bold mb-2">📦 Produtos Atuais</h2>
-						<div className="flex flex-col gap-2">
+						<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
 							{products.length > 0 ? (
 								products.map((product) => (
 									<Product
@@ -209,7 +211,9 @@ export default function Page() {
 									/>
 								))
 							) : (
-								<p className="text-gray-400 text-xs italic">Nenhum produto lançado ainda.</p>
+								<p className="text-gray-400 text-xs italic font-mono col-span-full text-center">
+									Nenhum produto lançado ainda.
+								</p>
 							)}
 						</div>
 					</div>

@@ -9,6 +9,9 @@ import {
 import { getProductQuality } from "../utils/quality";
 
 export default function PlanningForm({ onSubmit, budget }) {
+	const productTypes = { season: "Temporada", bundle: "Pacote", skin: "Visual", event: "Evento" };
+	const productEfforts = { low: "Baixo", medium: "Médio", high: "Alto" };
+
 	const [newProduct, setNewProduct] = useState({
 		type: "season",
 		name: "",
@@ -56,7 +59,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 		const updatedProducts = products.map((product) => ({
 			...product,
 			saturationIndex: getSaturationByType(product.type),
-			quality: getProductQuality(product.effort),
+			quality: getProductQuality(product),
 		}));
 
 		onSubmit({ newProducts: updatedProducts });
@@ -75,8 +78,8 @@ export default function PlanningForm({ onSubmit, budget }) {
 					onChange={handleInputChange}
 					className="p-2 rounded text-black text-sm flex-1">
 					<option value="season">Temporada</option>
-					<option value="bundle">Bundle</option>
-					<option value="skin">Skin</option>
+					<option value="bundle">Pacote (Bundle)</option>
+					<option value="skin">Aparência (Skin)</option>
 					<option value="event">Evento</option>
 				</select>
 				{/* Linha combinada para Tipo e Preço */}
@@ -119,7 +122,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 					className="p-2 rounded text-black text-sm"
 				/>
 
-				<p className="text-sm italic mt-2">💵 Custo do Produto: ${costPreview.toLocaleString()}</p>
+				<p className="text-sm italic font-mono mt-2">💵 Custo: ${costPreview.toLocaleString()}</p>
 
 				{/* Botão de Adicionar */}
 				<button
@@ -137,49 +140,60 @@ export default function PlanningForm({ onSubmit, budget }) {
 							key={product.id}
 							className="flex justify-between bg-gray-700 p-2 rounded mt-2">
 							<div>
-								<p className="text-xs italic">{product.type}</p>
+								<p className="text-xs">{productTypes[product.type]}</p>
 								<h4 className="font-bold text-md">{product.name}</h4>
 								<div className="flex gap-2 text-sm">
 									<p className="rounded-sm bg-gray-500 px-1 py-0.5">💵 {product.price}</p>
-									<p className="rounded-sm bg-gray-500 px-1 py-0.5">💪 {product.effort}</p>
+									<p className="rounded-sm bg-gray-500 px-1 py-0.5">
+										💪 {productEfforts[product.effort]}
+									</p>
 								</div>
+								<p className="italic font-mono text-xs mt-2">
+									Gastos: ${calculateCost(product).toLocaleString()}
+								</p>
 							</div>
 							<button onClick={() => removeProduct(product.id)}>❌</button>
 						</div>
 					))
 				) : (
-					<p className="text-gray-400 italic text-xs">Nenhum produto adicionado.</p>
+					<p className="text-gray-400 italic font-mono text-xs text-center">
+						Nenhum produto adicionado.
+					</p>
 				)}
 			</div>
 
 			{/* Prévia de custos */}
-			<div className="mt-4">
-				<h3 className="text-md font-bold">💰 Custo</h3>
-				<p className={`font-bold ${totalCostPreview > budget ? "text-red-500" : "text-green-500"}`}>
-					${totalCostPreview} / ${budget}
-				</p>
-			</div>
-
-			<div className="mt-4">
-				<h1 className="text-md font-bold">💪 Esforço</h1>
-				<div className="flex gap-1">
-					{[...Array(5)].map((_, index) => (
-						<div
-							key={index}
-							className={`w-5 h-5 rounded ${
-								effortPreview > 5
-									? "bg-red-500"
-									: index < effortPreview
-									? "bg-blue-500"
-									: "bg-gray-500"
-							}`}></div>
-					))}
-					<span
-						className={`ml-2 text-sm font-bold  ${
-							effortPreview > 5 ? "text-red-500" : "text-gray-500"
+			<div className="mt-4 flex justify-between">
+				<div>
+					<h1 className="text-md font-bold">💪 Esforço</h1>
+					<div className="flex gap-1">
+						{[...Array(5)].map((_, index) => (
+							<div
+								key={index}
+								className={`w-5 h-5 rounded ${
+									effortPreview > 5
+										? "bg-red-500"
+										: index < effortPreview
+										? "bg-blue-500"
+										: "bg-gray-500"
+								}`}></div>
+						))}
+						<span
+							className={`ml-2 text-sm font-bold  ${
+								effortPreview > 5 ? "text-red-500" : "text-gray-500"
+							}`}>
+							{effortPreview} / 5
+						</span>
+					</div>
+				</div>
+				<div className="flex flex-col justify-end">
+					<h3 className="text-md font-bold text-end">💰 Custo</h3>
+					<p
+						className={`font-bold text-sm ${
+							totalCostPreview > budget ? "text-red-500" : "text-green-500"
 						}`}>
-						{effortPreview} / 5
-					</span>
+						${totalCostPreview} / ${budget}
+					</p>
 				</div>
 			</div>
 
