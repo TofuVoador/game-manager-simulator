@@ -115,15 +115,13 @@ export default function Page() {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-900 text-white p-4 font-sans">
+		<div className="min-h-screen bg-gray-900 text-white p-4 font-montserrat">
 			{/* Tela de Game Over */}
 			{players <= 0 ? (
 				<div className="flex flex-col items-center justify-center h-screen text-center">
 					<h1 className="text-3xl font-bold mb-4">💀 Game Over 💀</h1>
 					<p className="text-lg mb-2">Seu jogo perdeu todos os jogadores.</p>
-					<p className="italic font-mono text-gray-400">
-						"Nem todo estúdio sobrevive ao mercado..."
-					</p>
+					<p className="font-roboto text-gray-400">"Nem todo estúdio sobrevive ao mercado..."</p>
 
 					{/* Relatório Final */}
 					<div className="mt-4 bg-gray-800 p-4 rounded w-80">
@@ -211,7 +209,7 @@ export default function Page() {
 									/>
 								))
 							) : (
-								<p className="text-gray-400 text-xs italic font-mono col-span-full text-center">
+								<p className="text-gray-400 text-xs font-roboto col-span-full text-center">
 									Nenhum produto lançado ainda.
 								</p>
 							)}

@@ -26,7 +26,7 @@ const Product = ({ product, onToggle }) => {
 				</div>
 				<div className="text-xs  ">
 					<p> x{quality.index}</p>
-					<p className="text-gray-500 italic font-mono">{quality.desc}</p>
+					<p className="text-gray-500 font-roboto">{quality.desc}</p>
 				</div>
 			</div>
 		</div>

@@ -12,9 +12,8 @@ export default {
 				foreground: "var(--foreground)",
 			},
 			fontFamily: {
-				comfortaa: ["var(--font-comfortaa)"],
-				sanches: ["var(--font-sanches)"],
-				spaceMono: ["var(--font-space-mono)"],
+				montserrat: ["var(--font-montserrat)"],
+				roboto: ["var(--font-roboto)"],
 			},
 		},
 	},

@@ -122,7 +122,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 					className="p-2 rounded text-black text-sm"
 				/>
 
-				<p className="text-sm italic font-mono mt-2">💵 Custo: ${costPreview.toLocaleString()}</p>
+				<p className="text-sm font-mono mt-2">💵 Custo: ${costPreview.toLocaleString()}</p>
 
 				{/* Botão de Adicionar */}
 				<button
@@ -148,7 +148,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 										💪 {productEfforts[product.effort]}
 									</p>
 								</div>
-								<p className="italic font-mono text-xs mt-2">
+								<p className="font-roboto text-xs mt-2">
 									Gastos: ${calculateCost(product).toLocaleString()}
 								</p>
 							</div>
@@ -156,9 +156,7 @@ export default function PlanningForm({ onSubmit, budget }) {
 						</div>
 					))
 				) : (
-					<p className="text-gray-400 italic font-mono text-xs text-center">
-						Nenhum produto adicionado.
-					</p>
+					<p className="text-gray-400 font-mono text-xs text-center">Nenhum produto adicionado.</p>
 				)}
 			</div>
 
